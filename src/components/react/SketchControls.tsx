@@ -12,7 +12,7 @@ export function SketchControls({ config, onValueChange }: SketchControlsProps) {
   const [values, setValues] = useState(() => {
     // Initialize with default values from config
     return Object.fromEntries(
-      config.controls.map((control) => [control.id, control.value])
+      config.controls.map((control) => [control.id, control.defaultValue])
     );
   });
 
@@ -37,6 +37,27 @@ export function SketchControls({ config, onValueChange }: SketchControlsProps) {
       localStorage.setItem(`${config.id}-presets`, JSON.stringify(presets));
     }
   }, [presets, config.id]);
+
+  // Add effect to listen for value updates from the sketch
+  useEffect(() => {
+    const handleSketchUpdate = (event: CustomEvent) => {
+      const { id, value } = event.detail;
+      setValues((prev) => ({ ...prev, [id]: value }));
+    };
+
+    // TypeScript needs this cast to work with CustomEvent
+    window.addEventListener(
+      "sketch-value-update",
+      handleSketchUpdate as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "sketch-value-update",
+        handleSketchUpdate as EventListener
+      );
+    };
+  }, []);
 
   const handleChange = (id: string, value: any) => {
     setValues((prev) => ({ ...prev, [id]: value }));
@@ -68,7 +89,9 @@ export function SketchControls({ config, onValueChange }: SketchControlsProps) {
                 {control.label}
               </label>
               <span className="text-sm text-muted-foreground w-12 text-right">
-                {values[control.id].toFixed(1)}
+                {typeof values[control.id] === "number"
+                  ? values[control.id].toFixed(1)
+                  : values[control.id]}
               </span>
             </div>
             {control.type === "range" && (

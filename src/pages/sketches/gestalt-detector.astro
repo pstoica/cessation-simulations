@@ -1,0 +1,41 @@
+---
+import SketchLayout from "../../layouts/SketchLayout.astro";
+import { SketchControlsWrapper } from "../../components/react/SketchControlsWrapper";
+import { config } from "../../sketches/gestalt-detector/config";
+---
+
+<SketchLayout title="Gestalt Detector">
+  <div slot="controls">
+    <SketchControlsWrapper client:load config={config} />
+  </div>
+
+  <div slot="visualization" id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+</SketchLayout>
+
+<style>
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const container = document.getElementById("canvas-container")!;
+
+    function resizeCanvas() {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    // Now initialize the visualization
+    import("../../scripts/gestalt-detector.js");
+  });
+</script> 
