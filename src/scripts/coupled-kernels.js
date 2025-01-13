@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const width = canvas.width = window.innerWidth;
-const height = canvas.height = window.innerHeight;
+let width = canvas.width;
+let height = canvas.height;
 const numRows = 20;
 const numCols = 20;
 const dt = 0.01; // Time step for numerical integration
@@ -22,37 +22,45 @@ const coupling3ValueDisplay = document.getElementById('coupling3Value');
 const coupling4ValueDisplay = document.getElementById('coupling4Value');
 const couplingSmallWorldValueDisplay = document.getElementById('couplingSmallWorldValue');
 
-// Calculate the spacing based on canvas dimensions and number of rows and columns
-const spacingX = width / numCols;
-const spacingY = height / numRows;
+// Initialize dots with spatially correlated natural frequencies
+const dots = [];
+let spacingX, spacingY;
+
+function updateDimensions() {
+  width = canvas.width;
+  height = canvas.height;
+  spacingX = width / numCols;
+  spacingY = height / numRows;
+}
+
+function initializeDots() {
+  updateDimensions();
+  dots.length = 0;
+  
+  for (let i = 0; i < numRows; i++) {
+    for (let j = 0; j < numCols; j++) {
+      const x = spacingX * j;
+      const y = spacingY * i;
+      const naturalFrequency = spatialCorrelation === 0 
+        ? frequencyRange[0] + Math.random() * (frequencyRange[1] - frequencyRange[0]) 
+        : generateFrequency(i, j);
+      const phase = Math.random() * 2 * Math.PI;
+      dots.push({ x, y, naturalFrequency, phase });
+    }
+  }
+
+  // Connect each dot to two random dots
+  for (let i = 0; i < dots.length; i++) {
+    const randomIndex1 = Math.floor(Math.random() * dots.length);
+    const randomIndex2 = Math.floor(Math.random() * dots.length);
+    dots[i].smallWorldNeighbors = [dots[randomIndex1], dots[randomIndex2]];
+  }
+}
 
 // Custom function to generate spatially correlated frequencies
 function generateFrequency(row, col) {
 const noiseValue = Math.sin(row * spatialCorrelation * Math.PI) * Math.cos(col * spatialCorrelation * Math.PI);
 return frequencyRange[0] + (noiseValue + 1) * (frequencyRange[1] - frequencyRange[0]) / 2;
-}
-
-// Initialize dots with spatially correlated natural frequencies
-const dots = [];
-function initializeDots() {
-dots.length = 0; // Clear the dots array
-
-for (let i = 0; i < numRows; i++) {
-for (let j = 0; j < numCols; j++) {
-const x = spacingX * j;
-const y = spacingY * i;
-const naturalFrequency = spatialCorrelation === 0 ? frequencyRange[0] + Math.random() * (frequencyRange[1] - frequencyRange[0]) : generateFrequency(i, j);
-const phase = Math.random() * 2 * Math.PI;
-dots.push({ x, y, naturalFrequency, phase });
-}
-}
-
-// Connect each dot to two random dots
-for (let i = 0; i < dots.length; i++) {
-const randomIndex1 = Math.floor(Math.random() * dots.length);
-const randomIndex2 = Math.floor(Math.random() * dots.length);
-dots[i].smallWorldNeighbors = [dots[randomIndex1], dots[randomIndex2]];
-}
 }
 
 // Helper function to convert CIELAB to RGB
@@ -167,13 +175,12 @@ ctx.fillRect(dot.x, dot.y, spacingX, spacingY);
 requestAnimationFrame(update);
 }
 
-// Initialize dots and start the animation
+// Update resize handler
+window.addEventListener('resize', () => {
+  updateDimensions();
+  initializeDots();
+});
+
+// Initialize
 initializeDots();
 update();
-
-// Resize canvas and re-initialize dots on window resize
-window.addEventListener('resize', () => {
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-initializeDots();
-});

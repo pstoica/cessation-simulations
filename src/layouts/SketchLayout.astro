@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="layout">
+      <div id="controls">
+        <h1>{title}</h1>
+        <slot name="controls" />
+      </div>
+      <div id="canvas-container">
+        <slot name="visualization" />
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .layout {
+    display: flex;
+    height: 100vh;
+  }
+  #controls {
+    width: 400px;
+    padding: 20px;
+    background: #f0f0f0;
+    overflow-y: auto;
+  }
+  #canvas-container {
+    flex: 1;
+    position: relative;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
