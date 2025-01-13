@@ -1,0 +1,57 @@
+---
+const sketches = [
+  {
+    id: "coupled-kernels",
+    title: "Coupled Kernels",
+    description:
+      "Visualization of coupled oscillators with adjustable coupling strengths",
+  },
+  {
+    id: "fractal-recursive",
+    title: "Fractal Recursive Coherence",
+    description: "Recursive visualization of coherent patterns",
+  },
+  {
+    id: "gestalt-detector",
+    title: "Gestalt Detector",
+    description: "Detection of emergent patterns in 3D space",
+  },
+  {
+    id: "standing-waves",
+    title: "Standing Waves",
+    description: "3D visualization of standing wave patterns",
+  },
+];
+---
+
+<nav class="sketch-nav">
+  <select id="sketchSelect" onchange="window.location.href = this.value">
+    <option value="">Select Sketch</option>
+    {
+      sketches.map((sketch) => (
+        <option
+          value={`/sketches/${sketch.id}`}
+          selected={Astro.url.pathname === `/sketches/${sketch.id}`}
+        >
+          {sketch.title}
+        </option>
+      ))
+    }
+  </select>
+</nav>
+
+<style>
+  .sketch-nav {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+  }
+
+  select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+  }
+</style>

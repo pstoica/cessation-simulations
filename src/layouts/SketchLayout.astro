@@ -1,4 +1,6 @@
 ---
+import SketchSelector from "@/components/SketchSelector.astro";
+
 interface Props {
   title: string;
 }
@@ -21,6 +23,7 @@ const { title } = Astro.props;
       <div id="canvas-container">
         <slot name="visualization" />
       </div>
+      <SketchSelector />
     </div>
   </body>
 </html>

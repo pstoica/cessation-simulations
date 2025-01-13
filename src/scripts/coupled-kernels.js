@@ -8,19 +8,20 @@ const dt = 0.01; // Time step for numerical integration
 const frequencyRange = [1.1, 3.3]; // Adjust this range as needed
 const spatialCorrelation = 0.3; // Adjust this value between 0 and 1 to control the spatial correlation
 
-// Get the slider elements
-const coupling1Slider = document.getElementById('coupling1');
-const coupling2Slider = document.getElementById('coupling2');
-const coupling3Slider = document.getElementById('coupling3');
-const coupling4Slider = document.getElementById('coupling4');
-const couplingSmallWorldSlider = document.getElementById('couplingSmallWorld');
+// Store current coupling values
+const couplingValues = {
+  coupling1: 10.1,
+  coupling2: 5.0,
+  coupling3: 2.5,
+  coupling4: 1.0,
+  couplingSmallWorld: 0.0
+};
 
-// Get the slider value elements
-const coupling1ValueDisplay = document.getElementById('coupling1Value');
-const coupling2ValueDisplay = document.getElementById('coupling2Value');
-const coupling3ValueDisplay = document.getElementById('coupling3Value');
-const coupling4ValueDisplay = document.getElementById('coupling4Value');
-const couplingSmallWorldValueDisplay = document.getElementById('couplingSmallWorldValue');
+// Listen for control changes from React
+window.addEventListener("sketch-control-change", (event) => {
+  const { id, value } = event.detail;
+  couplingValues[id] = value;
+});
 
 // Initialize dots with spatially correlated natural frequencies
 const dots = [];
@@ -90,20 +91,6 @@ return [Math.max(0, Math.min(1, r)) * 255, Math.max(0, Math.min(1, g)) * 255, Ma
 function update() {
 ctx.clearRect(0, 0, width, height);
 
-// Get the current values of coupling from the sliders
-const coupling1 = parseFloat(coupling1Slider.value);
-const coupling2 = parseFloat(coupling2Slider.value);
-const coupling3 = parseFloat(coupling3Slider.value);
-const coupling4 = parseFloat(coupling4Slider.value);
-const couplingSmallWorld = parseFloat(couplingSmallWorldSlider.value);
-
-// Update the slider value displays
-coupling1ValueDisplay.textContent = coupling1.toFixed(1);
-coupling2ValueDisplay.textContent = coupling2.toFixed(1);
-coupling3ValueDisplay.textContent = coupling3.toFixed(1);
-coupling4ValueDisplay.textContent = coupling4.toFixed(1);
-couplingSmallWorldValueDisplay.textContent = couplingSmallWorld.toFixed(1);
-
 for (let i = 0; i < dots.length; i++) {
 const dot = dots[i];
 
@@ -116,7 +103,10 @@ const col = i % numCols;
 
 // Check neighbors up to 4 steps away
 for (let step = 1; step <= 4; step++) {
-  const couplingStrength = step === 1 ? coupling1 : (step === 2 ? coupling2 : (step === 3 ? coupling3 : coupling4));
+  const couplingStrength = step === 1 ? couplingValues.coupling1 
+    : (step === 2 ? couplingValues.coupling2 
+    : (step === 3 ? couplingValues.coupling3 
+    : couplingValues.coupling4));
 
   // Check left neighbor
   if (col - step >= 0) {
@@ -154,7 +144,7 @@ for (let step = 1; step <= 4; step++) {
 // Calculate coupling term for small world neighbors
 for (const neighbor of dot.smallWorldNeighbors) {
   const phaseDifference = neighbor.phase - dot.phase;
-  couplingTerm += couplingSmallWorld * Math.sin(phaseDifference);
+  couplingTerm += couplingValues.couplingSmallWorld * Math.sin(phaseDifference);
   numNeighbors++;
 }
 

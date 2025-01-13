@@ -1,116 +1,20 @@
 ---
 import SketchLayout from "../../layouts/SketchLayout.astro";
+import { SketchControlsWrapper } from "../../components/react/SketchControlsWrapper";
+import { config } from "../../sketches/coupled-kernels/config";
 ---
 
 <SketchLayout title="Coupled Kernels">
   <div slot="controls">
-    <div class="controls-container">
-      <div class="control-row">
-        <label for="coupling1">
-          Coupling (1):
-          <span class="value" id="coupling1Value">10.1</span>
-        </label>
-        <input
-          type="range"
-          id="coupling1"
-          min="-20"
-          max="20"
-          step="0.1"
-          value="10.1"
-        />
-      </div>
-      <div class="control-row">
-        <label for="coupling2">
-          Coupling (2):
-          <span class="value" id="coupling2Value">5.0</span>
-        </label>
-        <input
-          type="range"
-          id="coupling2"
-          min="-20"
-          max="20"
-          step="0.1"
-          value="5.0"
-        />
-      </div>
-      <div class="control-row">
-        <label for="coupling3">
-          Coupling (3):
-          <span class="value" id="coupling3Value">2.5</span>
-        </label>
-        <input
-          type="range"
-          id="coupling3"
-          min="-20"
-          max="20"
-          step="0.1"
-          value="2.5"
-        />
-      </div>
-      <div class="control-row">
-        <label for="coupling4">
-          Coupling (4+):
-          <span class="value" id="coupling4Value">1.0</span>
-        </label>
-        <input
-          type="range"
-          id="coupling4"
-          min="-20"
-          max="20"
-          step="0.1"
-          value="1.0"
-        />
-      </div>
-      <div class="control-row">
-        <label for="couplingSmallWorld">
-          Small World:
-          <span class="value" id="couplingSmallWorldValue">0.0</span>
-        </label>
-        <input
-          type="range"
-          id="couplingSmallWorld"
-          min="-20"
-          max="20"
-          step="0.1"
-          value="0.0"
-        />
-      </div>
-    </div>
+    <SketchControlsWrapper client:load config={config} />
   </div>
 
-  <div slot="visualization">
+  <div slot="visualization" id="canvas-container">
     <canvas id="canvas"></canvas>
   </div>
 </SketchLayout>
 
 <style>
-  .controls-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .control-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .control-row label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .value {
-    min-width: 3em;
-    text-align: right;
-  }
-
-  input[type="range"] {
-    width: 100%;
-  }
-
   canvas {
     width: 100%;
     height: 100%;
@@ -119,10 +23,9 @@ import SketchLayout from "../../layouts/SketchLayout.astro";
 </style>
 
 <script>
-  // Wait for DOM to be ready
   document.addEventListener("DOMContentLoaded", () => {
-    const canvas = document.getElementById("canvas");
-    const container = document.getElementById("canvas-container");
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const container = document.getElementById("canvas-container")!;
 
     function resizeCanvas() {
       canvas.width = container.clientWidth;
