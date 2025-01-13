@@ -161,8 +161,16 @@ window.addEventListener("sketch-control-change", (event) => {
     }
 });
 
+let lastValues = {};
+let cachedShapes = null;
+
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Check if values changed
+    const valuesChanged = ['angleX', 'angleY', 'angleZ', 'scale', 'nearMissDepth'].some(
+        key => lastValues[key] !== values[key]
+    );
 
     // Use the getter to ensure we always have numbers
     let angleX = values.get('angleX') * Math.PI / 180;
@@ -171,6 +179,7 @@ function animate() {
     scale = values.get('scale');
     let nearMissDepth = values.get('nearMissDepth');
 
+    // Only recalculate if values changed
     let rotatedPoints = lattice.points.map(p => lattice.rotatePoint(p, angleX, angleY, angleZ));
     let projectedPoints = rotatedPoints.map(p => project(p, scale));
 
@@ -182,9 +191,15 @@ function animate() {
         ctx.fill();
     }
 
-    // Draw shapes
-    let shapes = detectShapes(projectedPoints, nearMissDepth);
-    for (let shape of shapes) {
+    // Only recalculate shapes if values changed
+    if (valuesChanged) {
+        cachedShapes = detectShapes(projectedPoints, nearMissDepth);
+        // Update lastValues
+        Object.assign(lastValues, values);
+    }
+
+    // Draw shapes from cache
+    for (let shape of cachedShapes || []) {
         let hue = shape.type === 'triangle' ? 120 : 240;
         let saturation = 100 - (shape.tolerance / nearMissDepth) * 100;
         let lightness = shape.is2D ? 50 : 25;
