@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { debounce } from "lodash-es";
@@ -18,6 +18,7 @@ interface GestaltDetectorProps {
     scale: number;
     nearMissDepth: number;
   };
+  onValuesChange: (values: Partial<GestaltDetectorProps["values"]>) => void;
 }
 
 interface Shape {
@@ -305,9 +306,13 @@ function ShapeHighlights({
   );
 }
 
-function Scene({ values }: GestaltDetectorProps) {
-  const groupRef = useRef<THREE.Group>(null);
-
+function Scene({
+  groupRef,
+  values,
+}: {
+  groupRef: React.RefObject<THREE.Group>;
+  values: GestaltDetectorProps["values"];
+}) {
   const points = useMemo(() => {
     const latticePoints: Point3D[] = [];
     const spacing = 50;
@@ -325,14 +330,6 @@ function Scene({ values }: GestaltDetectorProps) {
     return latticePoints;
   }, []);
 
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.x = (values.angleX * Math.PI) / 180;
-      groupRef.current.rotation.y = (values.angleY * Math.PI) / 180;
-      groupRef.current.rotation.z = (values.angleZ * Math.PI) / 180;
-    }
-  });
-
   return (
     <group ref={groupRef}>
       <group scale={values.scale}>
@@ -347,15 +344,25 @@ function Scene({ values }: GestaltDetectorProps) {
   );
 }
 
-export function GestaltDetector({ values }: GestaltDetectorProps) {
+export function GestaltDetector({
+  values,
+  onValuesChange,
+}: GestaltDetectorProps) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  // Handle slider changes
+  useEffect(() => {
+    if (!groupRef.current) return;
+    groupRef.current.rotation.x = (values.angleX * Math.PI) / 180;
+    groupRef.current.rotation.y = (values.angleY * Math.PI) / 180;
+    groupRef.current.rotation.z = (values.angleZ * Math.PI) / 180;
+  }, [values.angleX, values.angleY, values.angleZ]);
+
   return (
-    <Canvas
-      camera={{ position: [200, 200, 200], fov: 50 }}
-      performance={{ min: 0.5 }}
-    >
+    <Canvas camera={{ position: [200, 200, 200], fov: 50 }}>
       <color attach="background" args={["#000000"]} />
       <OrbitControls enableDamping={true} dampingFactor={0.05} />
-      <Scene values={values} />
+      <Scene groupRef={groupRef} values={values} />
     </Canvas>
   );
 }

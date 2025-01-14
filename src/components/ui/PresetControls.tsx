@@ -63,28 +63,19 @@ export function PresetControls({
   };
 
   const handleExport = () => {
-    const preset = presets.find((p) => p.name === selectedPreset);
-    if (!preset) return;
-
-    // Create a full export object with metadata
-    const exportData = {
-      sketchId: config.id,
-      preset: {
-        name: preset.name,
-        values: preset.values,
-      },
-      exportedAt: new Date().toISOString(),
+    const preset = {
+      name: selectedPreset,
+      values: currentValues,
     };
 
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+    // Create and trigger download
+    const blob = new Blob([JSON.stringify(preset, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${config.id}-${preset.name
-      .toLowerCase()
-      .replace(/\s+/g, "-")}.json`;
+    a.download = `${selectedPreset || "preset"}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

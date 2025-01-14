@@ -18,9 +18,11 @@ export function GestaltDetectorWrapper() {
     nearMissDepth: 0.2,
   });
 
+  // Listen for control changes from UI
   useEffect(() => {
     const handleControlChange = (event: CustomEvent) => {
       const { id, value } = event.detail;
+      console.log("Control change in wrapper:", id, value);
       setValues((prev) => ({ ...prev, [id]: Number(value) }));
     };
 
@@ -37,5 +39,19 @@ export function GestaltDetectorWrapper() {
     };
   }, []);
 
-  return <GestaltDetector values={values} />;
+  // Emit value updates back to controls
+  const handleSceneChange = (newValues: Partial<Values>) => {
+    console.log("Scene change:", newValues);
+    Object.entries(newValues).forEach(([id, value]) => {
+      console.log("Dispatching value update:", id, value);
+      window.dispatchEvent(
+        new CustomEvent("sketch-value-update", {
+          detail: { id, value },
+        })
+      );
+    });
+    setValues((prev) => ({ ...prev, ...newValues }));
+  };
+
+  return <GestaltDetector values={values} onValuesChange={handleSceneChange} />;
 }
