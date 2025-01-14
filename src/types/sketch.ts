@@ -2,7 +2,7 @@ export interface SketchControl {
   id: string;
   label: string;
   type: "range" | "toggle" | "select" | "color" | "vector";
-  value: number | boolean | string | [number, number, number];
+  defaultValue: number | boolean | string | [number, number, number];
   min?: number;
   max?: number;
   step?: number;
@@ -12,11 +12,18 @@ export interface SketchControl {
 export interface SketchConfig {
   id: string;
   title: string;
-  description: string;
+  description?: string;
+  seizureWarning?: boolean;
   controls: SketchControl[];
+  presets?: Preset[];
 }
 
 export interface SketchPreset {
+  name: string;
+  values: Record<string, any>;
+}
+
+export interface Preset {
   name: string;
   values: Record<string, any>;
 }

@@ -1,50 +1,83 @@
 ---
-import SketchSelector from "@/components/SketchSelector.astro";
+import { SeizureWarning } from "../components/sketches/SeizureWarning";
 
 interface Props {
   title: string;
+  seizureWarning?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, seizureWarning = false } = Astro.props;
+
+// Get all sketch routes and extract configs
+const sketchFiles = await Astro.glob("../pages/sketches/*.astro");
+const sketches = sketchFiles.map(sketch => ({
+  url: sketch.url,
+  // Extract name from URL: "/sketches/coupled-kernels" -> "Coupled Kernels"
+  title: sketch.url.split('/').pop()?.replace('-', ' ')
+    .split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') || title
+}));
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <div class="layout">
-      <div id="controls">
-        <h1>{title}</h1>
-        <slot name="controls" />
-      </div>
-      <div id="canvas-container">
-        <slot name="visualization" />
-      </div>
-      <SketchSelector />
+<div class="sketch-layout">
+  <div class="controls">
+    <div class="sketch-selector">
+      <select onChange="window.location.href = this.value">
+        {sketches.map((sketch) => (
+          <option 
+            value={sketch.url} 
+            selected={sketch.url.includes(title.toLowerCase().replace(" ", "-"))}
+          >
+            {sketch.title}
+          </option>
+        ))}
+      </select>
     </div>
-  </body>
-</html>
+    <div class="controls-container">
+      <slot name="controls" />
+    </div>
+  </div>
+  <div class="visualization">
+    {seizureWarning && <SeizureWarning client:load />}
+    <slot name="visualization" />
+  </div>
+</div>
 
 <style>
-  .layout {
+  .sketch-layout {
     display: flex;
     height: 100vh;
   }
-  #controls {
-    width: 400px;
-    padding: 20px;
-    background: #f0f0f0;
+
+  .controls {
+    width: 300px;
+    background: #f5f5f5;
+    border-right: 1px solid #ddd;
     overflow-y: auto;
   }
-  #canvas-container {
+
+  .controls-container {
+    padding: 1rem;
+  }
+
+  .sketch-selector {
+    padding: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    background: white;
+  }
+
+  .sketch-selector select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: white;
+  }
+
+  .visualization {
     flex: 1;
     position: relative;
-  }
-  body {
-    margin: 0;
-    padding: 0;
+    background: black;
   }
 </style>
