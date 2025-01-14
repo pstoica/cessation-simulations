@@ -4,14 +4,17 @@ import type { SketchConfig } from "../types/sketch";
 interface Props {
   config: SketchConfig;
   onValueChange: (id: string, value: any) => void;
+  onValuesInit?: (values: Record<string, any>) => void;
 }
 
-export function SketchControls({ config, onValueChange }: Props) {
-  const [values, setValues] = useState<Record<string, any>>(() =>
-    Object.fromEntries(
+export function SketchControls({ config, onValueChange, onValuesInit }: Props) {
+  const [values, setValues] = useState<Record<string, any>>(() => {
+    const initialValues = Object.fromEntries(
       config.controls.map((control) => [control.id, control.defaultValue])
-    )
-  );
+    );
+    onValuesInit?.(initialValues);
+    return initialValues;
+  });
 
   const handleChange = (id: string, value: any) => {
     setValues((prev) => ({ ...prev, [id]: value }));

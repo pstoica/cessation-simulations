@@ -101,20 +101,22 @@ const config: SketchConfig = {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const container = document.getElementById("canvas-container")!;
 
+    // Import the module once
+    const { initialize, handleResize } = await import("../../scripts/coupled-kernels.js");
+
+    // Setup resize handler
     function resizeCanvas() {
-      const rect = container.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      handleResize(canvas, container);
     }
 
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
-    // Now initialize the visualization
-    import("../../scripts/coupled-kernels.js");
+    // Initialize once
+    initialize();
   });
 </script>
