@@ -32,6 +32,27 @@ const sketches = sketchFiles.map(sketch => ({
           </option>
         ))}
       </select>
+      <div class="flex gap-2 mt-2">
+        <button
+          onclick="window.exportAllPresets()"
+          class="flex-1 text-sm p-2 border rounded bg-white hover:bg-gray-50"
+        >
+          Export All Presets
+        </button>
+        <button
+          onclick="document.getElementById('import-all').click()"
+          class="flex-1 text-sm p-2 border rounded bg-white hover:bg-gray-50"
+        >
+          Import All Presets
+        </button>
+        <input
+          type="file"
+          id="import-all"
+          accept=".json"
+          class="hidden"
+          onchange="window.importAllPresets(this.files[0]).then(() => window.location.reload())"
+        />
+      </div>
     </div>
     <div class="controls-container">
       <slot name="controls" />
@@ -50,7 +71,7 @@ const sketches = sketchFiles.map(sketch => ({
   }
 
   .controls {
-    width: 300px;
+    width: 400px;
     background: #f5f5f5;
     border-right: 1px solid #ddd;
     overflow-y: auto;
@@ -82,3 +103,9 @@ const sketches = sketchFiles.map(sketch => ({
     background: black;
   }
 </style>
+
+<script>
+  import { exportAllPresets, importAllPresets } from '../lib/utils';
+  window.exportAllPresets = exportAllPresets;
+  window.importAllPresets = importAllPresets;
+</script>

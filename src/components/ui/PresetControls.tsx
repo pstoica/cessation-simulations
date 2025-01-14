@@ -108,11 +108,11 @@ export function PresetControls({
   };
 
   return (
-    <div className="relative space-y-3">
+    <div className="flex gap-2 items-center">
       <select
         value={selectedPreset}
         onChange={handlePresetChange}
-        className="w-full p-3 border rounded-lg text-lg bg-white"
+        className="flex-1 p-2 border rounded-lg bg-white"
       >
         <option value="">Select preset...</option>
         {presets.map((preset) => (
@@ -121,38 +121,12 @@ export function PresetControls({
           </option>
         ))}
       </select>
-      <div className="flex gap-2 h-[46px]">
-        <button
-          onClick={handleSave}
-          className="flex-1 border rounded-lg bg-white hover:bg-gray-50 transition-colors text-lg"
-        >
-          Save
-        </button>
-        <button
-          onClick={handleExport}
-          className="flex-1 border rounded-lg bg-white hover:bg-gray-50 transition-colors text-lg"
-          disabled={!selectedPreset}
-        >
-          Export
-        </button>
-        <button
-          onClick={handleImport}
-          className="flex-1 border rounded-lg bg-white hover:bg-gray-50 transition-colors text-lg"
-        >
-          Import
-        </button>
-      </div>
       <button
-        onClick={() => {
-          if (confirm("Reset all presets for this sketch?")) {
-            localStorage.removeItem(`${config.id}-presets`);
-            setPresets(defaultPresets);
-            setSelectedPreset("");
-          }
-        }}
-        className="text-sm text-gray-500 hover:text-gray-700"
+        onClick={handleSave}
+        className="p-2 border rounded-lg bg-white hover:bg-gray-50 transition-colors"
+        title="Save Preset"
       >
-        Reset
+        💾
       </button>
     </div>
   );
