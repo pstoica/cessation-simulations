@@ -20,6 +20,8 @@ const couplingValues = {
 
 // Export resize handler
 export function handleResize(canvasEl, container) {
+  if (!container) return;
+  
   const rect = container.getBoundingClientRect();
   canvasEl.width = rect.width;
   canvasEl.height = rect.height;
@@ -180,7 +182,14 @@ export function initialize() {
   if (initialized) return;
   
   canvas = document.getElementById('canvas');
-  ctx = canvas.getContext('2d');
+  ctx = canvas?.getContext('2d');
+  
+  // If canvas isn't ready yet, retry in a bit
+  if (!canvas || !ctx) {
+    requestAnimationFrame(initialize);
+    return;
+  }
+
   width = canvas.width;
   height = canvas.height;
 

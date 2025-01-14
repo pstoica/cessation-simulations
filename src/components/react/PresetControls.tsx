@@ -130,18 +130,6 @@ export function PresetControls({
           </option>
         ))}
       </select>
-      <button
-        onClick={() => {
-          if (confirm("Reset all presets for this sketch?")) {
-            localStorage.removeItem(`${config.id}-presets`);
-            setPresets(defaultPresets);
-            setSelectedPreset("");
-          }
-        }}
-        className="absolute -bottom-8 left-0 text-sm text-gray-500 hover:text-gray-700"
-      >
-        Reset
-      </button>
       <div className="flex gap-2 h-[46px]">
         <button
           onClick={handleSave}
@@ -163,6 +151,18 @@ export function PresetControls({
           Import
         </button>
       </div>
+      <button
+        onClick={() => {
+          if (confirm("Reset all presets for this sketch?")) {
+            localStorage.removeItem(`${config.id}-presets`);
+            setPresets(defaultPresets);
+            setSelectedPreset("");
+          }
+        }}
+        className="text-sm text-gray-500 hover:text-gray-700"
+      >
+        Reset
+      </button>
     </div>
   );
 }

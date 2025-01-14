@@ -80,7 +80,11 @@ const config: SketchConfig = {
 };
 ---
 
-<SketchLayout title={config.title} seizureWarning={config.seizureWarning}>
+<SketchLayout 
+  title={config.title} 
+  seizureWarning={config.seizureWarning}
+  sketchId={config.id}
+>
   <SketchControlsWrapper client:load config={config} slot="controls" />
   <div slot="visualization" id="canvas-container" style="width: 100%; height: 100%;">
     <canvas id="canvas"></canvas>
@@ -102,6 +106,9 @@ const config: SketchConfig = {
 
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
+    // Wait a tick to ensure canvas is ready
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const container = document.getElementById("canvas-container")!;
 

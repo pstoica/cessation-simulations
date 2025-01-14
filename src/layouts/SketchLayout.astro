@@ -4,9 +4,10 @@ import { SeizureWarning } from "../components/sketches/SeizureWarning";
 interface Props {
   title: string;
   seizureWarning?: boolean;
+  sketchId: string;
 }
 
-const { title, seizureWarning = false } = Astro.props;
+const { title, seizureWarning = false, sketchId } = Astro.props;
 
 // Get all sketch routes and extract configs
 const sketchFiles = await Astro.glob("../pages/sketches/*.astro");
@@ -37,7 +38,7 @@ const sketches = sketchFiles.map(sketch => ({
     </div>
   </div>
   <div class="visualization">
-    {seizureWarning && <SeizureWarning client:load />}
+    {seizureWarning && <SeizureWarning client:load sketchId={sketchId} />}
     <slot name="visualization" />
   </div>
 </div>

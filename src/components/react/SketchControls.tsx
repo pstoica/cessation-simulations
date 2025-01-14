@@ -12,9 +12,12 @@ export function SketchControls({ config, onValueChange, onValuesInit }: Props) {
     const initialValues = Object.fromEntries(
       config.controls.map((control) => [control.id, control.defaultValue])
     );
-    onValuesInit?.(initialValues);
     return initialValues;
   });
+
+  useEffect(() => {
+    onValuesInit?.(values);
+  }, []);
 
   const handleChange = (id: string, value: any) => {
     setValues((prev) => ({ ...prev, [id]: value }));
