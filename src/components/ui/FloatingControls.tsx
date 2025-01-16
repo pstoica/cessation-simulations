@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "../../lib/utils";
@@ -19,6 +19,26 @@ export function FloatingControls({
   children,
 }: FloatingControlsProps) {
   const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      const isFormElement =
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        activeElement instanceof HTMLSelectElement;
+
+      if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      } else if (event.key.toLowerCase() === "s" && !isFormElement) {
+        event.preventDefault();
+        setIsOpen(!isOpen);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscKey);
+    return () => window.removeEventListener("keydown", handleEscKey);
+  }, [isOpen]);
 
   return (
     <>
