@@ -22,6 +22,31 @@ export function SketchControlsWrapper({ config }: Props) {
     );
   };
 
+  // Listen for preset loads
+  useEffect(() => {
+    const handlePresetLoad = (
+      e: CustomEvent<{ values: Record<string, ControlValue> }>
+    ) => {
+      const { values } = e.detail;
+      setCurrentValues(values);
+      // Dispatch individual control changes for each value
+      Object.entries(values).forEach(([id, value]) => {
+        window.dispatchEvent(
+          new CustomEvent("sketch-control-change", {
+            detail: { id, value },
+          })
+        );
+      });
+    };
+
+    window.addEventListener("preset-load", handlePresetLoad as EventListener);
+    return () =>
+      window.removeEventListener(
+        "preset-load",
+        handlePresetLoad as EventListener
+      );
+  }, []);
+
   // Add listener for value updates
   useEffect(() => {
     const handler = (e: CustomEvent<{ id: string; value: ControlValue }>) => {

@@ -29,9 +29,11 @@ export function PresetControls({
       })
     );
   }, []);
-  const [selectedPreset, setSelectedPreset] = useState<string>("");
-  const [presets, setPresets] = useState<Preset[]>(defaultPresets);
 
+  const [presets, setPresets] = useState<Preset[]>(defaultPresets);
+  const [selectedPreset, setSelectedPreset] = useState<string>("");
+
+  // Initialize presets and load first preset
   useEffect(() => {
     const savedPresets = localStorage.getItem(`${config.id}-presets`);
     const allPresets = savedPresets
@@ -40,12 +42,12 @@ export function PresetControls({
 
     setPresets(allPresets);
 
-    if (allPresets.length > 0 && !selectedPreset) {
+    if (allPresets.length > 0) {
       const firstPreset = allPresets[0];
       setSelectedPreset(firstPreset.name);
       onLoad(firstPreset.values);
     }
-  }, [config.id, defaultPresets]);
+  }, [config.id, defaultPresets, onLoad]);
 
   const handlePresetChange = (name: string) => {
     const preset = presets.find((p) => p.name === name);
