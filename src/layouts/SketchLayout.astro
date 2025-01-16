@@ -10,8 +10,8 @@ interface Props {
 const { title, seizureWarning = false, sketchId } = Astro.props;
 
 // Get all sketch routes and extract configs
-const sketchFiles = await Astro.glob("../pages/sketches/*.astro");
-const sketches = sketchFiles.map(sketch => ({
+const sketchFiles = await Astro.glob("../pages/*.astro");
+const sketches = sketchFiles.filter(sketch => !sketch.url?.includes("index")).map(sketch => ({
   url: sketch.url,
   // Extract name from URL: "/sketches/coupled-kernels" -> "Coupled Kernels"
   title: sketch.url.split('/').pop()?.replace('-', ' ')
@@ -22,7 +22,7 @@ const sketches = sketchFiles.map(sketch => ({
 <div class="sketch-layout">
   <div class="controls">
     <div class="sketch-selector">
-      <select onChange="window.location.href = this.value">
+      <select onchange="window.location.href = this.value">
         {sketches.map((sketch) => (
           <option 
             value={sketch.url} 
@@ -106,6 +106,14 @@ const sketches = sketchFiles.map(sketch => ({
 
 <script>
   import { exportAllPresets, importAllPresets } from '../lib/utils';
+  // Explicitly declare the properties on the Window interface
+  declare global {
+    interface Window {
+      exportAllPresets: typeof exportAllPresets;
+      importAllPresets: typeof importAllPresets;
+    }
+  }
+
   window.exportAllPresets = exportAllPresets;
   window.importAllPresets = importAllPresets;
 </script>

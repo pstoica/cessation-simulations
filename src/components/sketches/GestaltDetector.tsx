@@ -2,7 +2,18 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
-import { debounce } from "lodash-es";
+import { ReactThreeFiber, extend } from "@react-three/fiber";
+
+extend({ Line_: THREE.Line });
+
+// https://github.com/pmndrs/react-three-fiber/discussions/1387
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      line_: ReactThreeFiber.Object3DNode<THREE.Line, typeof THREE.Line>;
+    }
+  }
+}
 
 interface Point3D {
   x: number;
@@ -279,7 +290,7 @@ function ShapeHighlights({
 
         return (
           <group key={i}>
-            <line geometry={geometries[i].lineGeo}>
+            <line_ geometry={geometries[i].lineGeo}>
               <lineBasicMaterial
                 color={color}
                 opacity={alpha}
@@ -287,7 +298,7 @@ function ShapeHighlights({
                 linewidth={2}
                 depthWrite={false}
               />
-            </line>
+            </line_>
             <mesh geometry={geometries[i].faceGeo}>
               <meshBasicMaterial
                 color={color}
