@@ -1,14 +1,17 @@
 ---
+import "../../index.css";
 import { SeizureWarning } from "../components/sketches/SeizureWarning";
 import { SketchSelector } from "../components/sketches/SketchSelector";
+import type { SketchConfig } from "../types/sketch";
 
 interface Props {
   title: string;
   seizureWarning?: boolean;
   sketchId: string;
+  config: SketchConfig;
 }
 
-const { title, seizureWarning = false, sketchId } = Astro.props;
+const { title, seizureWarning = false, sketchId, config } = Astro.props;
 
 // Get all sketch routes and extract configs
 const sketchFiles = await Astro.glob("../pages/*.astro");
@@ -23,7 +26,13 @@ const sketches = sketchFiles.filter(sketch => sketch.url !== '').map(sketch => (
 <meta charset="utf-8">
 <div class="sketch-layout">
   <div class="controls">
-    <SketchSelector client:load sketches={sketches} currentTitle={title} />
+    <SketchSelector 
+      client:load 
+      sketches={sketches} 
+      currentTitle={title}
+      config={config}
+      currentValues={{}}
+    />
     <div class="controls-container">
       <slot name="controls" />
     </div>

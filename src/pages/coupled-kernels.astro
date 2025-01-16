@@ -84,6 +84,7 @@ const config: SketchConfig = {
   title={config.title} 
   seizureWarning={config.seizureWarning}
   sketchId={config.id}
+  config={config}
 >
   <SketchControlsWrapper client:load config={config} slot="controls" />
   <div slot="visualization" id="canvas-container" style="width: 100%; height: 100%;">
