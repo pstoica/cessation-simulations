@@ -12,7 +12,7 @@ const { title, seizureWarning = false, sketchId } = Astro.props;
 
 // Get all sketch routes and extract configs
 const sketchFiles = await Astro.glob("../pages/*.astro");
-const sketches = sketchFiles.filter(sketch => !sketch.url?.includes("index")).map(sketch => ({
+const sketches = sketchFiles.filter(sketch => sketch.url !== '').map(sketch => ({
   url: sketch.url,
   // Extract name from URL: "/sketches/coupled-kernels" -> "Coupled Kernels"
   title: sketch.url.split('/').pop()?.replace('-', ' ')
