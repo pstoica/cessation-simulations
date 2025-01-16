@@ -1,8 +1,8 @@
 ---
-import SketchLayout from "../../layouts/SketchLayout.astro";
-import { SketchControlsWrapper } from "../../components/ui/SketchControlsWrapper";
-import { GestaltDetectorWrapper } from "../../components/sketches/GestaltDetectorWrapper";
-import type { SketchConfig } from "../../types/sketch";
+import SketchLayout from "../layouts/SketchLayout.astro";
+import { SketchControlsWrapper } from "../components/ui/SketchControlsWrapper";
+import { GestaltDetectorWrapper } from "../components/sketches/GestaltDetectorWrapper";
+import type { SketchConfig } from "../types/sketch";
 
 const config: SketchConfig = {
   id: "gestalt-detector",
@@ -81,7 +81,7 @@ const config: SketchConfig = {
 };
 ---
 
-<SketchLayout title={config.title} seizureWarning={config.seizureWarning}>
+<SketchLayout title={config.title} seizureWarning={config.seizureWarning} sketchId={config.id}>
   <SketchControlsWrapper client:load config={config} slot="controls" />
   <GestaltDetectorWrapper client:load slot="visualization" />
 </SketchLayout>

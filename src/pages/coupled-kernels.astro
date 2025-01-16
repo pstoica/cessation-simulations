@@ -1,7 +1,7 @@
 ---
-import SketchLayout from "../../layouts/SketchLayout.astro";
-import { SketchControlsWrapper } from "../../components/ui/SketchControlsWrapper.jsx";
-import type { SketchConfig } from "../../types/sketch";
+import SketchLayout from "../layouts/SketchLayout.astro";
+import { SketchControlsWrapper } from "../components/ui/SketchControlsWrapper.jsx";
+import type { SketchConfig } from "../types/sketch";
 
 const config: SketchConfig = {
   id: "coupled-kernels",
@@ -113,7 +113,7 @@ const config: SketchConfig = {
     const container = document.getElementById("canvas-container")!;
 
     // Import the module once
-    const { initialize, handleResize } = await import("../../scripts/coupled-kernels.js");
+    const { initialize, handleResize } = await import("../scripts/coupled-kernels.js");
 
     // Setup resize handler
     function resizeCanvas() {
