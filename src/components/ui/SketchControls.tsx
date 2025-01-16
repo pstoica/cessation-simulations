@@ -108,35 +108,70 @@ export function SketchControls({ config, onValueChange, onValuesInit }: Props) {
               <div className="w-[20px]" aria-hidden="true" /> // Spacer for alignment
             )}
             <label className="text-sm font-medium">{control.label}</label>
-            <input
-              type="range"
-              id={control.id}
-              data-id={control.id}
-              min={control.min}
-              max={control.max}
-              step={control.step}
-              value={values[control.id]}
-              onChange={(e) =>
-                handleChange(control.id, parseFloat(e.target.value))
-              }
-              className="w-full"
-            />
-            <input
-              type="number"
-              value={
-                inputValues[control.id] ?? Number(values[control.id]).toFixed(2)
-              }
-              onChange={(e) => handleInputChange(control.id, e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.currentTarget.blur();
-                  handleNumberInput(control.id);
-                }
-              }}
-              onBlur={() => handleNumberInput(control.id)}
-              className="w-16 px-1 py-0.5 text-right text-sm bg-white border rounded"
-              step={control.step}
-            />
+            {control.type === "range" ? (
+              <>
+                <input
+                  type="range"
+                  id={control.id}
+                  data-id={control.id}
+                  min={control.min}
+                  max={control.max}
+                  step={control.step}
+                  value={values[control.id]}
+                  onChange={(e) =>
+                    handleChange(control.id, parseFloat(e.target.value))
+                  }
+                  className="w-full"
+                />
+                <input
+                  type="number"
+                  value={
+                    inputValues[control.id] ??
+                    Number(values[control.id]).toFixed(2)
+                  }
+                  onChange={(e) =>
+                    handleInputChange(control.id, e.target.value)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.currentTarget.blur();
+                      handleNumberInput(control.id);
+                    }
+                  }}
+                  onBlur={() => handleNumberInput(control.id)}
+                  className="w-16 px-1 py-0.5 text-right text-sm bg-white border rounded"
+                  step={control.step}
+                />
+              </>
+            ) : control.type === "toggle" ? (
+              <>
+                <div className="flex justify-end col-span-2">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={values[control.id]}
+                    onClick={() =>
+                      handleChange(control.id, !values[control.id])
+                    }
+                    className={`
+                      relative inline-flex h-6 w-11 items-center rounded-full
+                      ${values[control.id] ? "bg-blue-600" : "bg-gray-200"}
+                      transition-colors duration-200
+                    `}
+                  >
+                    <span className="sr-only">{control.label}</span>
+                    <span
+                      className={`
+                        inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200
+                        ${
+                          values[control.id] ? "translate-x-6" : "translate-x-1"
+                        }
+                      `}
+                    />
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
         ))}
       </div>

@@ -1,0 +1,165 @@
+---
+import SketchLayout from "../layouts/SketchLayout.astro";
+import { SketchControlsWrapper } from "../components/ui/SketchControlsWrapper.jsx";
+import type { SketchConfig } from "../types/sketch";
+
+const config: SketchConfig = {
+  id: "standing-waves",
+  title: "Standing Waves",
+  description: "3D Lattice Coupled Oscillators visualization with adjustable coupling strengths",
+  seizureWarning: true,
+  presets: [
+    {
+      name: "Ripple Pattern",
+      values: {
+        coupling1: 0.3,
+        coupling2: -0.1,
+        coupling3: 0.0,
+        coupling4: 0.0,
+        rotationSpeed: 0.01,
+        autoRotate: true,
+        useProjectedDistance: true
+      }
+    },
+    {
+      name: "Checkerboard",
+      values: {
+        coupling1: -0.4,
+        coupling2: 0.2,
+        coupling3: -0.1,
+        coupling4: 0.0,
+        rotationSpeed: 0.015,
+        autoRotate: true,
+        useProjectedDistance: false
+      }
+    },
+    {
+      name: "Wave Cascade",
+      values: {
+        coupling1: 0.5,
+        coupling2: 0.3,
+        coupling3: 0.1,
+        coupling4: -0.2,
+        rotationSpeed: 0.02,
+        autoRotate: true,
+        useProjectedDistance: true
+      }
+    }
+  ],
+  controls: [
+    {
+      id: "coupling1",
+      label: "Coupling 1 (near)",
+      type: "range",
+      defaultValue: 0.0,
+      min: -1,
+      max: 1,
+      step: 0.01,
+      tooltip: "Coupling strength for nearest neighbors",
+    },
+    {
+      id: "coupling2",
+      label: "Coupling 2",
+      type: "range",
+      defaultValue: 0.0,
+      min: -1,
+      max: 1,
+      step: 0.01,
+      tooltip: "Coupling strength for second nearest neighbors",
+    },
+    {
+      id: "coupling3",
+      label: "Coupling 3",
+      type: "range",
+      defaultValue: 0.0,
+      min: -1,
+      max: 1,
+      step: 0.01,
+      tooltip: "Coupling strength for third nearest neighbors",
+    },
+    {
+      id: "coupling4",
+      label: "Coupling 4 (far)",
+      type: "range",
+      defaultValue: -0.1,
+      min: -1,
+      max: 1,
+      step: 0.01,
+      tooltip: "Coupling strength for furthest neighbors",
+    },
+    {
+      id: "rotationSpeed",
+      label: "Rotation Speed",
+      type: "range",
+      defaultValue: 0.01,
+      min: 0,
+      max: 0.05,
+      step: 0.001,
+      tooltip: "Speed of auto-rotation",
+    },
+    {
+      id: "autoRotate",
+      label: "Auto Rotate",
+      type: "toggle",
+      defaultValue: false,
+      tooltip: "Enable automatic rotation",
+    },
+    {
+      id: "useProjectedDistance",
+      label: "Use Projected Distance",
+      type: "toggle",
+      defaultValue: true,
+      tooltip: "Use projected distance for coupling calculations",
+    },
+  ],
+};
+---
+
+<SketchLayout 
+  title={config.title} 
+  seizureWarning={config.seizureWarning}
+  sketchId={config.id}
+  config={config}
+>
+  <SketchControlsWrapper client:load config={config} slot="controls" />
+  <div slot="visualization" id="canvas-container" style="width: 100%; height: 100%;">
+    <canvas id="canvas"></canvas>
+  </div>
+</SketchLayout>
+
+<style>
+  :global(#canvas-container) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  :global(canvas) {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Wait a tick to ensure canvas is ready
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const container = document.getElementById("canvas-container")!;
+
+    // Import the module once
+    const { initialize, handleResize } = await import("../scripts/standing-waves.js");
+
+    // Setup resize handler
+    function resizeCanvas() {
+      handleResize(canvas, container);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    // Initialize once
+    initialize();
+  });
+</script> 

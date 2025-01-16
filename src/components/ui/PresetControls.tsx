@@ -98,7 +98,7 @@ export function PresetControls({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
-            {selectedPreset || "Select preset..."}
+            {selectedPreset || presets[0].name}
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
