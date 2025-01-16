@@ -1,5 +1,6 @@
 ---
 import { SeizureWarning } from "../components/sketches/SeizureWarning";
+import { SketchSelector } from "../components/sketches/SketchSelector";
 
 interface Props {
   title: string;
@@ -19,41 +20,10 @@ const sketches = sketchFiles.filter(sketch => !sketch.url?.includes("index")).ma
 }));
 ---
 
+<meta charset="utf-8">
 <div class="sketch-layout">
   <div class="controls">
-    <div class="sketch-selector">
-      <select onchange="window.location.href = this.value">
-        {sketches.map((sketch) => (
-          <option 
-            value={sketch.url} 
-            selected={sketch.url.includes(title.toLowerCase().replace(" ", "-"))}
-          >
-            {sketch.title}
-          </option>
-        ))}
-      </select>
-      <div class="flex gap-2 mt-2">
-        <button
-          onclick="window.exportAllPresets()"
-          class="flex-1 text-sm p-2 border rounded bg-white hover:bg-gray-50"
-        >
-          Export All Presets
-        </button>
-        <button
-          onclick="document.getElementById('import-all').click()"
-          class="flex-1 text-sm p-2 border rounded bg-white hover:bg-gray-50"
-        >
-          Import All Presets
-        </button>
-        <input
-          type="file"
-          id="import-all"
-          accept=".json"
-          class="hidden"
-          onchange="window.importAllPresets(this.files[0]).then(() => window.location.reload())"
-        />
-      </div>
-    </div>
+    <SketchSelector client:load sketches={sketches} currentTitle={title} />
     <div class="controls-container">
       <slot name="controls" />
     </div>
@@ -81,39 +51,9 @@ const sketches = sketchFiles.filter(sketch => !sketch.url?.includes("index")).ma
     padding: 1rem;
   }
 
-  .sketch-selector {
-    padding: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #ddd;
-    background: white;
-  }
-
-  .sketch-selector select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    background: white;
-  }
-
   .visualization {
     flex: 1;
     position: relative;
     background: black;
   }
 </style>
-
-<script>
-  import { exportAllPresets, importAllPresets } from '../lib/utils';
-  // Explicitly declare the properties on the Window interface
-  declare global {
-    interface Window {
-      exportAllPresets: typeof exportAllPresets;
-      importAllPresets: typeof importAllPresets;
-    }
-  }
-
-  window.exportAllPresets = exportAllPresets;
-  window.importAllPresets = importAllPresets;
-</script>
