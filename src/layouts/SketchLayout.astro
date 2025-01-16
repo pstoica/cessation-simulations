@@ -1,8 +1,9 @@
 ---
 import "../../index.css";
 import { SeizureWarning } from "../components/sketches/SeizureWarning";
-import { SketchSelector } from "../components/sketches/SketchSelector";
+import { FloatingControls } from "../components/ui/FloatingControls";
 import type { SketchConfig } from "../types/sketch";
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -23,45 +24,38 @@ const sketches = sketchFiles.filter(sketch => sketch.url !== '').map(sketch => (
 }));
 ---
 
-<meta charset="utf-8">
+<head>
+  <ClientRouter />
+  <meta charset="utf-8">
+</head>
+
 <div class="sketch-layout">
-  <div class="controls">
-    <SketchSelector 
-      client:load 
-      sketches={sketches} 
-      currentTitle={title}
-      config={config}
-      currentValues={{}}
-    />
-    <div class="controls-container">
-      <slot name="controls" />
-    </div>
-  </div>
   <div class="visualization">
     {seizureWarning && <SeizureWarning client:load sketchId={sketchId} />}
     <slot name="visualization" />
   </div>
+
+  <FloatingControls
+    client:load
+    title={title}
+    config={config}
+    sketches={sketches}
+  >
+    <slot name="controls" />
+  </FloatingControls>
 </div>
+
+<ClientRouter />
 
 <style>
   .sketch-layout {
-    display: flex;
     height: 100vh;
-  }
-
-  .controls {
-    width: 400px;
-    background: #f5f5f5;
-    border-right: 1px solid #ddd;
-    overflow-y: auto;
-  }
-
-  .controls-container {
-    padding: 1rem;
+    position: relative;
   }
 
   .visualization {
-    flex: 1;
+    width: 100%;
+    height: 100%;
     position: relative;
     background: black;
   }

@@ -81,7 +81,7 @@ const config: SketchConfig = {
 };
 ---
 
-<SketchLayout title={config.title} seizureWarning={config.seizureWarning} sketchId={config.id}>
+<SketchLayout title={config.title} seizureWarning={config.seizureWarning} sketchId={config.id} config={config}>
   <SketchControlsWrapper client:load config={config} slot="controls" />
   <GestaltDetectorWrapper client:load slot="visualization" />
 </SketchLayout>

@@ -5,7 +5,7 @@ interface Props {
 }
 
 export function SeizureWarning({ sketchId }: Props) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const hasAccepted = localStorage.getItem(
