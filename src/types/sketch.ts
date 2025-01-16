@@ -1,6 +1,7 @@
 export interface SketchControl {
   id: string;
   label: string;
+  tooltip?: string;
   type: "range" | "toggle" | "select" | "color" | "vector";
   defaultValue: number | boolean | string | [number, number, number];
   min?: number;

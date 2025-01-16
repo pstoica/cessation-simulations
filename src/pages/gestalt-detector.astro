@@ -18,6 +18,7 @@ const config: SketchConfig = {
       max: 180,
       step: 1,
       defaultValue: 0,
+      tooltip: "Rotates the point cloud around the X axis (horizontal rotation)",
     },
     {
       id: "angleY",
@@ -27,6 +28,7 @@ const config: SketchConfig = {
       max: 180,
       step: 1,
       defaultValue: 0,
+      tooltip: "Rotates the point cloud around the Y axis (vertical rotation)",
     },
     {
       id: "angleZ",
@@ -36,6 +38,7 @@ const config: SketchConfig = {
       max: 180,
       step: 1,
       defaultValue: 0,
+      tooltip: "Rotates the point cloud around the Z axis (depth rotation)",
     },
     {
       id: "scale",
@@ -45,6 +48,7 @@ const config: SketchConfig = {
       max: 2,
       step: 0.1,
       defaultValue: 1.0,
+      tooltip: "Adjusts the overall size of the visualization",
     },
     {
       id: "nearMissDepth",
@@ -54,6 +58,7 @@ const config: SketchConfig = {
       max: 0.5,
       step: 0.01,
       defaultValue: 0.15,
+      tooltip: "Controls how close points need to be to be considered part of the same shape pattern",
     },
   ],
   presets: [

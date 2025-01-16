@@ -24,14 +24,14 @@ export function FloatingControls({
     <>
       <div
         className={cn(
-          "fixed bottom-20 left-5 z-50 w-[400px] max-h-[calc(100vh-100px)]",
-          "bg-background rounded-lg shadow-lg flex flex-col",
+          "fixed bottom-20 left-5 z-50 w-[450px] max-h-[calc(100vh-100px)]",
+          "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 rounded-lg shadow-lg flex flex-col",
           "transform transition-transform duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-[150%]"
         )}
       >
         <div className="w-full h-full overflow-y-auto rounded-lg">
-          <div className="p-4 pb-0">{children}</div>
+          <div className="p-3">{children}</div>
           <SketchSelector
             sketches={sketches}
             currentTitle={title}

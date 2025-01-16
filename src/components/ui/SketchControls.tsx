@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import type { SketchConfig } from "../../types/sketch";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./tooltip";
 
 interface Props {
   config: SketchConfig;
@@ -78,14 +85,29 @@ export function SketchControls({ config, onValueChange, onValuesInit }: Props) {
   };
 
   return (
-    <div className="space-y-4">
-      {config.controls.map((control) => (
-        <div
-          key={control.id}
-          className="flex justify-between items-center gap-4"
-        >
-          <label className="flex-1">{control.label}</label>
-          <div className="flex-1">
+    <TooltipProvider delayDuration={0}>
+      <div className="space-y-2">
+        {config.controls.map((control) => (
+          <div
+            key={control.id}
+            className="grid grid-cols-[auto,1fr,1fr,auto] items-center gap-2 text-sm"
+          >
+            {control.tooltip ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-0.5 text-neutral-400 hover:text-neutral-950 transition-colors">
+                    <Info className="h-3.5 w-3.5" />
+                    <span className="sr-only">Info</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" align="center">
+                  <p>{control.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className="w-[20px]" aria-hidden="true" /> // Spacer for alignment
+            )}
+            <label className="text-sm font-medium">{control.label}</label>
             <input
               type="range"
               id={control.id}
@@ -99,25 +121,25 @@ export function SketchControls({ config, onValueChange, onValuesInit }: Props) {
               }
               className="w-full"
             />
-          </div>
-          <input
-            type="number"
-            value={
-              inputValues[control.id] ?? Number(values[control.id]).toFixed(2)
-            }
-            onChange={(e) => handleInputChange(control.id, e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.currentTarget.blur();
-                handleNumberInput(control.id);
+            <input
+              type="number"
+              value={
+                inputValues[control.id] ?? Number(values[control.id]).toFixed(2)
               }
-            }}
-            onBlur={() => handleNumberInput(control.id)}
-            className="w-24 px-2 py-1 text-right bg-white border rounded"
-            step={control.step}
-          />
-        </div>
-      ))}
-    </div>
+              onChange={(e) => handleInputChange(control.id, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.currentTarget.blur();
+                  handleNumberInput(control.id);
+                }
+              }}
+              onBlur={() => handleNumberInput(control.id)}
+              className="w-16 px-1 py-0.5 text-right text-sm bg-white border rounded"
+              step={control.step}
+            />
+          </div>
+        ))}
+      </div>
+    </TooltipProvider>
   );
 }
